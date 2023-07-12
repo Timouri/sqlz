@@ -143,7 +143,7 @@ func (stmt *UpdateStmt) ToSQL(rebind bool) (asSQL string, bindings []interface{}
 		// add the set columns
 		for _, column := range stmt.MultipleValues.Columns {
 			updates = append(updates,
-				fmt.Sprintf("%s.%s = %s.%s", stmt.Table, column, stmt.MultipleValues.As, column))
+				fmt.Sprintf("%s = %s.%s", column, stmt.MultipleValues.As, column))
 		}
 	}
 
