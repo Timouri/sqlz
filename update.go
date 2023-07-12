@@ -23,10 +23,11 @@ type UpdateStmt struct {
 }
 
 type MultipleValues struct {
-	Values  [][]interface{}
-	As      string
-	Columns []string
-	Where   []WhereCondition
+	Values         [][]interface{}
+	SetValuesTypes map[string]string
+	As             string
+	Columns        []string
+	Where          []WhereCondition
 }
 
 // Update creates a new UpdateStmt object for
@@ -142,8 +143,10 @@ func (stmt *UpdateStmt) ToSQL(rebind bool) (asSQL string, bindings []interface{}
 	if len(stmt.Updates) == 0 && len(stmt.MultipleValues.Columns) > 0 {
 		// add the set columns
 		for _, column := range stmt.MultipleValues.Columns {
+			valueType := stmt.MultipleValues.SetValuesTypes[column]
+
 			updates = append(updates,
-				fmt.Sprintf("%s = %s.%s", column, stmt.MultipleValues.As, column))
+				fmt.Sprintf("%s%s = %s.%s", column, valueType, stmt.MultipleValues.As, column))
 		}
 	}
 
