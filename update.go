@@ -297,6 +297,7 @@ func (stmt *UpdateStmt) FromValues(mv MultipleValues) *UpdateStmt {
 	stmt.MultipleValues.As = mv.As
 	stmt.MultipleValues.Columns = mv.Columns
 	stmt.MultipleValues.Where = mv.Where
+	stmt.MultipleValues.SetValuesTypes = mv.SetValuesTypes
 
 	return stmt
 }

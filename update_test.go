@@ -68,9 +68,13 @@ func TestUpdate(t *testing.T) {
 					Values:  [][]interface{}{{"Tom", 20}, {"John", 3}},
 					As:      "values",
 					Columns: []string{"name", "age"},
-					Where:   []WhereCondition{Eq("values.name", Indirect("table.name"))},
+					SetValuesTypes: map[string]string{
+						"name": "::text",
+						"age":  "::int",
+					},
+					Where: []WhereCondition{Eq("values.name", Indirect("table.name"))},
 				}),
-				"UPDATE table SET table.name = values.name, table.age = values.age FROM (VALUES (?, ?), (?, ?)) AS values(name, age) WHERE values.name = table.name",
+				"UPDATE table SET name = values.name::text, age = values.age::int FROM (VALUES (?, ?), (?, ?)) AS values(name, age) WHERE values.name = table.name",
 				[]interface{}{"Tom", 20, "John", 3},
 			},
 		}
