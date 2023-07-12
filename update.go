@@ -146,7 +146,7 @@ func (stmt *UpdateStmt) ToSQL(rebind bool) (asSQL string, bindings []interface{}
 			valueType := stmt.MultipleValues.SetValuesTypes[column]
 
 			updates = append(updates,
-				fmt.Sprintf("%s%s = %s.%s", column, valueType, stmt.MultipleValues.As, column))
+				fmt.Sprintf("%s = %s.%s%s", column, stmt.MultipleValues.As, column, valueType))
 		}
 	}
 
