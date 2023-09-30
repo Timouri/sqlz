@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"reflect"
 	"strings"
 
 	"github.com/jmoiron/sqlx"
@@ -67,6 +68,27 @@ func (stmt *UpdateStmt) SetMap(updates map[string]interface{}) *UpdateStmt {
 	}
 
 	return stmt
+}
+
+// SetStruct receives a struct with 'db' tag.
+func (stmt *UpdateStmt) SetStruct(update interface{}) *UpdateStmt {
+	m := map[string]interface{}{}
+
+	refV := reflect.ValueOf(update)
+	refT := reflect.TypeOf(update)
+
+	for i := 0; i < refT.NumField(); i++ {
+		name := refT.Field(i).Name
+
+		typeField, exists := refT.FieldByName(name)
+		if exists {
+			k := typeField.Tag.Get("db")
+			v := refV.FieldByName(name).Interface()
+			m[k] = v
+		}
+	}
+
+	return stmt.SetMap(m)
 }
 
 // SetIf is the same as Set, but also accepts a boolean value and only does
