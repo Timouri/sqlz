@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"reflect"
 	"strings"
 
 	"github.com/jmoiron/sqlx"
@@ -66,6 +67,27 @@ func (stmt *InsertStmt) ValueMap(vals map[string]interface{}) *InsertStmt {
 	}
 
 	return stmt
+}
+
+// ValueStruct receives a struct and convert it's values to map with 'db' tag and add values to insert
+func (stmt *InsertStmt) ValueStruct(vals interface{}) *InsertStmt {
+	m := map[string]interface{}{}
+
+	refV := reflect.ValueOf(vals)
+	refT := reflect.TypeOf(vals)
+
+	for i := 0; i < refT.NumField(); i++ {
+		name := refT.Field(i).Name
+
+		typeField, exists := refT.FieldByName(name)
+		if exists {
+			k := typeField.Tag.Get("db")
+			v := refV.FieldByName(name).Interface()
+			m[k] = v
+		}
+	}
+
+	return stmt.ValueMap(m)
 }
 
 // ValueMultiple receives an array of interfaces in order to insert multiple records using the same insert statement
