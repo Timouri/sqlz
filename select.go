@@ -567,6 +567,25 @@ func (stmt *SelectStmt) GetAllContext(ctx context.Context, into interface{}) err
 	return err
 }
 
+func (stmt *SelectStmt) GetCountStmt() *SelectStmt {
+	countStmt := *stmt
+	countStmt.Columns = []string{"COUNT(*)"}
+	countStmt.LimitTo = 0
+	countStmt.OffsetFrom = 0
+	countStmt.OffsetRows = 0
+	countStmt.Ordering = []SQLStmt{}
+
+	for _, st := range countStmt.Unions {
+		st.Columns = []string{"COUNT(*)"}
+		st.LimitTo = 0
+		st.OffsetFrom = 0
+		st.OffsetRows = 0
+		st.Ordering = []SQLStmt{}
+	}
+
+	return &countStmt
+}
+
 // GetCount executes the SELECT statement disregarding limits,
 // offsets, selected columns and ordering; and returns the
 // total number of matching results. This is useful when
