@@ -574,6 +574,7 @@ func (stmt *SelectStmt) GetCountStmt() *SelectStmt {
 	countStmt.OffsetFrom = 0
 	countStmt.OffsetRows = 0
 	countStmt.Ordering = []SQLStmt{}
+	countStmt.Locks = []*LockClause{}
 
 	for _, st := range countStmt.Unions {
 		st.Columns = []string{"COUNT(*)"}
@@ -581,6 +582,7 @@ func (stmt *SelectStmt) GetCountStmt() *SelectStmt {
 		st.OffsetFrom = 0
 		st.OffsetRows = 0
 		st.Ordering = []SQLStmt{}
+		st.Locks = []*LockClause{}
 	}
 
 	return &countStmt
@@ -599,6 +601,7 @@ func (stmt *SelectStmt) GetCount() (count int64, err error) {
 	countStmt.OffsetFrom = 0
 	countStmt.OffsetRows = 0
 	countStmt.Ordering = []SQLStmt{}
+	countStmt.Locks = []*LockClause{}
 
 	for _, st := range countStmt.Unions {
 		st.Columns = []string{"COUNT(*)"}
@@ -606,6 +609,7 @@ func (stmt *SelectStmt) GetCount() (count int64, err error) {
 		st.OffsetFrom = 0
 		st.OffsetRows = 0
 		st.Ordering = []SQLStmt{}
+		st.Locks = []*LockClause{}
 	}
 
 	rows, err := countStmt.GetAllAsRows()
@@ -641,6 +645,7 @@ func (stmt *SelectStmt) GetCountContext(ctx context.Context) (count int64, err e
 	countStmt.OffsetFrom = 0
 	countStmt.OffsetRows = 0
 	countStmt.Ordering = []SQLStmt{}
+	countStmt.Locks = []*LockClause{}
 
 	err = countStmt.GetRowContext(ctx, &count)
 
